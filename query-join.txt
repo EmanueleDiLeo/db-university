@@ -52,27 +52,19 @@ SELECT DISTINCT `teachers`.`name` AS `teacher_name` , `teachers`.`surname` AS `t
 FROM `courses` 
 	INNER JOIN `degrees` ON `courses`.`degree_id` = `degrees`.`id`
 	INNER JOIN `course_teacher` ON `course_teacher`.`course_id` = `courses`.`id`
-    INNER JOIN `teachers` ON `course_teacher`.`teacher_id` = `teachers`.`id`
-    INNER JOIN `departments` ON `departments`.`id` = `degrees`.`department_id`
+  INNER JOIN `teachers` ON `course_teacher`.`teacher_id` = `teachers`.`id`
+  INNER JOIN `departments` ON `departments`.`id` = `degrees`.`department_id`
 WHERE `departments`.`name` = 'Dipartimento di Matematica';
 
 
 
 7. BONUS: Selezionare per ogni studente il numero di tentativi sostenuti per ogni esame, stampando anche il voto massimo. Successivamente, filtrare i tentativi con voto minimo 18.
 
-7v1
-SELECT `students`.`name` AS `student_name`, `students`.`surname` AS `student_surname`, `courses`.`name` AS `name_exam` , COUNT(`exam_student`.`vote`) AS `number_vote`,  MAX(`exam_student`.`vote`) AS `student's_max_vote`
+SELECT `students`.`surname` AS `student_surname`, `students`.`name` AS `student_name`, `students`.`registration_number` AS `registration_number`, `courses`.`name` AS `name_exam` , COUNT(`exam_student`.`vote`) AS `number_vote`,  MAX(`exam_student`.`vote`) AS `student's_max_vote`
 FROM `students` 
-    INNER JOIN `exam_student` ON `exam_student`.`student_id` = `students`.`id` 
-    INNER JOIN `exams` ON `exam_student`.`exam_id` = `exams`.`id`
-    INNER JOIN `courses` ON `exams`.`course_id` = `courses`.`id`
-GROUP BY `students`.`name` , `students`.`surname` , `exams`.`course_id`;
-
-7v2
-SELECT `students`.`name` AS `student_name`, `students`.`surname` AS `student_surname`, `courses`.`name` AS `name_exam` , COUNT(`exam_student`.`vote`) AS `number_vote`,  MAX(`exam_student`.`vote`) AS `student's_max_vote`
-FROM `students` 
-    INNER JOIN `exam_student` ON `exam_student`.`student_id` = `students`.`id` 
-    INNER JOIN `exams` ON `exam_student`.`exam_id` = `exams`.`id`
-    INNER JOIN `courses` ON `exams`.`course_id` = `courses`.`id`
-WHERE `exam_student`.`vote` >= 18
-GROUP BY `students`.`name` , `students`.`surname` , `exams`.`course_id`;
+  INNER JOIN `exam_student` ON `exam_student`.`student_id` = `students`.`id` 
+  INNER JOIN `exams` ON `exam_student`.`exam_id` = `exams`.`id`
+  INNER JOIN `courses` ON `exams`.`course_id` = `courses`.`id`
+GROUP BY `students`.`registration_number`,`students`.`name` , `students`.`surname` , `exams`.`course_id`
+HAVING `student's_max_vote` >= 18
+ORDER BY `students`.`surname`, `students`.`name`;
